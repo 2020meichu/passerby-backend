@@ -17,39 +17,36 @@ app.post('/register', async (req, res) => {
     const { id, password, username } = req.body
     // 檢查參數
     if (!id) {
-      return res.status(400).send({
-        message: '未附上身分證字號'
-      })
+      return res.status(400).send({ message: '未附上身分證字號' })
     }
     if (!password) {
-      return res.status(400).send({
-        message: '未附上密碼'
-      })
+      return res.status(400).send({ message: '未附上密碼' })
     }
     if (!username) {
-      return res.status(400).send({
-        message: '未附上名稱'
-      })
+      return res.status(400).send({ message: '未附上名稱' })
     }
     if (!isValidId(id)) {
-      return res.status(400).send({
-        message: '不合法的身分證字號'
-      })
+      return res.status(400).send({ message: '不合法的身分證字號' })
     }
 
-    // 建立 user
-    const user = JSON.parse(JSON.stringify(userModel))
-    const salt = bcrypt.genSaltSync()
-    const hash = bcrypt.hashSync(password, salt)
-    Object.assign(user, { id, username, password: hash })
+    const user = await (await users.doc(id).get()).data()
+    if (user) { // 使用者已存在
+      return res.status(403).send({ message: '該身分證字號已進行過註冊' })
+    } else {
+       // 建立 user
+      const newUser = JSON.parse(JSON.stringify(userModel))
+      const salt = bcrypt.genSaltSync()
+      const hash = bcrypt.hashSync(password, salt)
+      Object.assign(newUser, { id, username, password: hash })
 
-    // 寫入 firestore
-    await users.doc(id).set(user)
+      // 寫入 firestore
+      await users.doc(id).set(newUser)
 
-    // 生成 token & 回傳使用者資料
-    const token = issueToken(id)
-    delete user['password']
-    return res.status(200).send({ user, token })
+      // 生成 token & 回傳使用者資料
+      const token = issueToken(id)
+      delete newUser['password']
+      return res.status(200).send({ user: newUser, token })
+    }
   } catch (error) {
     console.log(error)
     return res.status(500).send({
@@ -62,19 +59,13 @@ app.post(
   (req, res, next) => {
     const { id, password } = req.body
     if (!id) {
-      return res.status(400).send({
-        message: '未附上身分證字號'
-      })
+      return res.status(400).send({ message: '未附上身分證字號' })
     }
     if (!password) {
-      return res.status(400).send({
-        message: '未附上密碼'
-      })
+      return res.status(400).send({ message: '未附上密碼' })
     }
     if (!isValidId(id)) {
-      return res.status(400).send({
-        message: '不合法的身分證字號'
-      })
+      return res.status(400).send({ message: '不合法的身分證字號' })
     }
     next()
   },
