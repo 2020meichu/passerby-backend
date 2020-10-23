@@ -73,10 +73,12 @@ app.post(
     passport.authenticate('local', { session: false }, (err, user, info) => {
       if (err) {
         return res.status(500).send(err)
-      } else if (info.message === 'not found') {
-        return res.status(404).send({ message: '無此使用者' })
-      } else if (info.message === 'wrong password') {
-        return res.status(403).send({ message: '密碼錯誤' })
+      } else if (info) {
+        if (info.message === 'not found') {
+          return res.status(404).send({ message: '無此使用者' })
+        } else if (info.message === 'wrong password') {
+          return res.status(403).send({ message: '密碼錯誤' })
+        } 
       } else {
         const token = issueToken(user.id)
         return res.status(200).send({ user, token })
