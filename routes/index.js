@@ -8,6 +8,8 @@ router.post('/login', authController.login)
 router.get('/configuration', configurationController.getConfiguration)
 router.use('/user', require('./user'))
 router.use('/admin', require('./admin'))
+router.use('/disease', require('./disease'))
+router.use('/region', require('./region'))
 
 router.get('*', (req, res) => {
   res.status(200).send({

@@ -1,13 +1,6 @@
 const db = require('../model/db')
-
-async function getAllDocuments (collectionId) {
-  const snapshot = await db.collection(collectionId).get()
-  return snapshot.docs.map(doc => doc.data())
-}
-
-function sortDocumentsById (documents) {
-  return documents.sort((prev, next) => prev.id - next.id)
-}
+const getAllDocuments = require('../utils/getAllDocuments')
+const sortDocumentsById = require('../utils/sortDocumentsById')
 
 const configurationController = {
   async getConfiguration (req, res) {
