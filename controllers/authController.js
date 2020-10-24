@@ -60,7 +60,7 @@ const authController = {
     if (!isValidId(id)) {
       return res.status(400).send({ message: '不合法的身分證字號' })
     }
-    passport.authenticate('local', { session: false }, (err, user, info) => {
+    passport.authenticate('user-local', { session: false }, (err, user, info) => {
       if (err) {
         return res.status(500).send(err)
       } else if (info) {

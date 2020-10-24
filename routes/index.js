@@ -7,6 +7,7 @@ router.post('/register', authController.register)
 router.post('/login', authController.login)
 router.get('/configuration', configurationController.getConfiguration)
 router.use('/user', require('./user'))
+router.use('/admin', require('./admin'))
 
 router.get('*', (req, res) => {
   res.status(200).send({
