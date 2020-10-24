@@ -6,6 +6,7 @@ const adminCollection = db.collection('admins')
 const diseaseCollection = db.collection('diseases')
 const regionCollection = db.collection('regions')
 const ruleCollection = db.collection('rules')
+const userCollection = db.collection('users')
 const getAllDocuments = require('../utils/getAllDocuments')
 const sortDocumentsById = require('../utils/sortDocumentsById')
 
@@ -222,7 +223,12 @@ const adminController = {
   },
   async getUserById (req, res) {
     try {
-      
+      const { id } = req.params
+      const user = await (await userCollection.doc(String(id)).get()).data()
+      if (!user) {
+        return res.status(404).send({ message: '無此使用者' })
+      }
+      return res.status(200).send({ user })
     } catch (error) {
       console.log(error)
       return res.status(500).send({ message: error.message })

@@ -5,6 +5,6 @@ const adminController = require('../controllers/adminController')
 
 router.post('/', passport.authenticate('admin-jwt', { session: false }), adminController.addAdmin)
 router.post('/login', adminController.adminLogin)
-router.get('/user/:id', adminController.getUserById)
+router.get('/user/:id', passport.authenticate('admin-jwt', { session: false }), adminController.getUserById)
 
 module.exports = router
