@@ -5,8 +5,44 @@ const db = require('../model/db')
 const adminCollection = db.collection('admins')
 const diseaseCollection = db.collection('diseases')
 const regionCollection = db.collection('regions')
+const ruleCollection = db.collection('rules')
 const getAllDocuments = require('../utils/getAllDocuments')
 const sortDocumentsById = require('../utils/sortDocumentsById')
+
+/**
+ * 
+ * @param {{diseaseIds: [Int], regionIds: [Int], quarantine: Int}} rules 
+ */
+async function checkRules (rules) {
+  const { diseaseIds, regionIds, quarantine } = rules
+  // check 疾病設定
+  if (diseaseIds) {
+    for (let i = 0; i < diseaseIds.length; i++) {
+      let disease = await (await diseaseCollection.doc(String(diseaseIds[i])).get()).data()
+      if (!disease) {
+        throw new Error('disease not exists')
+      }
+    }
+  }
+  // check 地區設定
+  if (regionIds) {
+    for (let i = 0; i < regionIds.length; i++) {
+      let region = await (await regionCollection.doc(String(regionIds[i])).get()).data()
+      if (!region) {
+        throw new Error('region not exists')
+      }
+    }
+  }
+  // check 隔離天數設定
+  if (quarantine !== undefined) {
+    console.log(quarantine)
+    if (!Number.isInteger(quarantine)) {
+      throw new Error('quarantine must be positive integer')
+    } else if (quarantine <= 0) {
+      throw new Error('quarantine must be positive integer')
+    }
+  }
+}
 
 const adminController = {
   async adminLogin (req, res, next) {
@@ -192,9 +228,41 @@ const adminController = {
       return res.status(500).send({ message: error.message })
     }
   },
+  async getLightRules (req, res) {
+    try {
+      const redLightRule = await (await ruleCollection.doc('red').get()).data()
+      const yellowLightRule = await (await ruleCollection.doc('yellow').get()).data()
+      return res.status(200).send({
+        rules: {
+          red: redLightRule,
+          yellow: yellowLightRule
+        }
+      })
+    } catch (error) {
+      console.log(error)
+      return res.status(500).send({ message: error.message })
+    }
+  },
   async setLightRules (req, res) {
     try {
-      
+      const { red, yellow } = req.body.rules
+      if (red) {
+        console.log(red)
+        await checkRules(red)
+        await ruleCollection.doc('red').set({ light: 'red', ...red })
+      }
+      if (yellow) {
+        await checkRules(yellow)
+        await ruleCollection.doc('yellow').set({ light: 'yellow', ...yellow })
+      }
+      const newRedLightRule = await (await ruleCollection.doc('red').get()).data()
+      const newYellowLightRule = await (await ruleCollection.doc('yellow').get()).data()
+      return res.status(200).send({
+        rules: {
+          red: newRedLightRule,
+          yellow: newYellowLightRule
+        }
+      })
     } catch (error) {
       console.log(error)
       return res.status(500).send({ message: error.message })

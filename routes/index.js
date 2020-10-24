@@ -16,6 +16,7 @@ router.use('/user', require('./user'))
 router.use('/admin', require('./admin'))
 router.use('/disease', require('./disease'))
 router.use('/region', require('./region'))
+router.use('/rules', require('./rule'))
 
 router.get('*', (req, res) => {
   res.status(200).send({
