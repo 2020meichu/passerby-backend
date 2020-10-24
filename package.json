@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=staging JWT_SECRET=MEICHU X_API_KEY=PASSER_BY_MEICHU node index.js",
+    "start": "cross-env NODE_ENV=staging JWT_SECRET=MEICHU X_API_KEY=PASSER_BY_MEICHU forever start -w index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "cross-env NODE_ENV=development JWT_SECRET=MEICHU X_API_KEY=PASSER_BY_MEICHU nodemon index.js"
   },
