@@ -11,6 +11,7 @@ app.use((req, res, next) => {
   next()
 })
 app.use(cors())
+app.options('*', cors())
 app.use(express.static('public'))
 app.use(bodyParser.json())
 app.use(passport.initialize())
