@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=staging JWT_SECRET=MEICHU nodemon index.js",
+    "start": "cross-env NODE_ENV=staging JWT_SECRET=MEICHU X_API_KEY=PASSER_BY_MEICHU node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "cross-env NODE_ENV=development JWT_SECRET=MEICHU nodemon index.js"
+    "dev": "cross-env NODE_ENV=development JWT_SECRET=MEICHU X_API_KEY=PASSER_BY_MEICHU nodemon index.js"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +19,7 @@
     "express": "^4.17.1",
     "firebase-admin": "^9.3.0",
     "jsonwebtoken": "^8.5.1",
+    "multer": "^1.4.2",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0"
