@@ -30,7 +30,7 @@ const userController = {
         return res.status(404).send({ message: 'Token 有誤或該使用者不存在' })
       }
       // 檢查參數
-      const { longitude, latitude, location } = req.body
+      const { longitude, latitude, location, address } = req.body
       const re = /^\d+\.*\d+$/
       if (!longitude || !latitude) {
         return res.status(400).send({ message: '座標缺漏' })
