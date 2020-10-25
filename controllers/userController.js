@@ -41,12 +41,17 @@ const userController = {
       if (!location) {
         return res.status(400).send({ message: '未附上地點'})
       }
+      if (address === undefined) {
+        return res.status(400).send({ message: '未附上地址' })
+      }
+
       // 加入足跡
       const footprints = Array.from(req.user.footprints)
       footprints.push({
         longitude,
         latitude,
         location,
+        address,
         time: new Date().toISOString()
       })
       await users.doc(req.user.id).update({ footprints })
