@@ -12,23 +12,25 @@ const sortDocumentsById = require('../utils/sortDocumentsById')
 
 /**
  * 
- * @param {{diseaseIds: [Int], regionIds: [Int], quarantine: Int}} rules 
+ * @param {{diseases: Object, regions: Object, quarantine: Int}} rules 
  */
 async function checkRules (rules) {
-  const { diseaseIds, regionIds, quarantine } = rules
+  const { diseases, regions, quarantine } = rules
   // check 疾病設定
-  if (diseaseIds) {
+  if (diseases) {
+    let diseaseIds = Object.keys(diseases)
     for (let i = 0; i < diseaseIds.length; i++) {
-      let disease = await (await diseaseCollection.doc(String(diseaseIds[i])).get()).data()
+      let disease = await (await diseaseCollection.doc(diseaseIds[i]).get()).data()
       if (!disease) {
         throw new Error('disease not exists')
       }
     }
   }
   // check 地區設定
-  if (regionIds) {
+  if (regions) {
+    let regionIds = Object.keys(regions)
     for (let i = 0; i < regionIds.length; i++) {
-      let region = await (await regionCollection.doc(String(regionIds[i])).get()).data()
+      let region = await (await regionCollection.doc(regionIds[i]).get()).data()
       if (!region) {
         throw new Error('region not exists')
       }
